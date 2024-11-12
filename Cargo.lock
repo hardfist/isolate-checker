@@ -599,6 +599,7 @@ name = "isolate-checker"
 version = "0.1.0"
 dependencies = [
  "im-rc",
+ "la-arena",
  "miette",
  "ra_ap_intern",
  "swc_core",
@@ -609,6 +610,12 @@ name = "itoa"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
+
+[[package]]
+name = "la-arena"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3752f229dcc5a481d60f385fa479ff46818033d881d2d801aa27dffcfb5e8306"
 
 [[package]]
 name = "libc"

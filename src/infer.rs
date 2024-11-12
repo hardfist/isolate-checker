@@ -15,7 +15,9 @@ impl TypeInference {
             Decl::Fn(node) => {
                 self.infer_fn_decl(node);
             }
-            _ => {}
+            _ => {
+               
+            }
         }
     }
     pub fn infer_fn_decl(&mut self, node: &FnDecl) {}

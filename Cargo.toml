@@ -15,3 +15,5 @@ swc_core = { version = "5.0.4", features = [
 miette = { version = "7.2.0", features = ["fancy"]}
 
 im = { package = "im-rc", version = "15.1"}
+
+la-arena = { version = "0.3"}
