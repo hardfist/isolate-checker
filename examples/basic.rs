@@ -1,4 +1,4 @@
-use isolate_checker::{ast::Ast, Checker};
+use isolate_checker::{ast::Ast, IrContext, TyContext, TypeInference};
 
 
 fn main() {
@@ -10,7 +10,9 @@ fn main() {
     let ast = Ast::new_from(code.into());
     dbg!(&ast);
     let mut errors = Vec::new();
-    let checker = Checker::new(ast, &mut errors);
+    let checker = IrContext::new(ast, &mut errors);
+    let mut infer = TypeInference::default();
+    let infer_ctx = TyContext::
     //let mut infer_context = Default::default();
     
 }

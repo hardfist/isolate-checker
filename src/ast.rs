@@ -20,4 +20,5 @@ impl Ast {
     }
 }
 
+#[derive(Debug)]
 pub struct NodeId(u32);
