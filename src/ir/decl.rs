@@ -6,6 +6,6 @@ pub struct DeclContext {
 
 }
 /// walk all declaration in ast
-pub fn walk_decl(ctx: &mut DeclContext, ast: Program, errors: &mut Vec<Report>){
+pub fn walk_decl(ctx: &mut DeclContext, ast: &Program, errors: &mut Vec<Report>){
 
 }

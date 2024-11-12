@@ -8,10 +8,15 @@ pub struct Checker {
 }
 
 impl Checker {
-    pub fn new(ast: Program, errors: &mut Vec<Report>){
+    pub fn new(ast: Program, errors: &mut Vec<Report>) -> Checker{
         let mut decl_context = DeclContext::default();
-        walk_decl(&mut decl_context, ast, errors);
+        walk_decl(&mut decl_context, &ast, errors);
         let mut ty_context = TyContext::default();
         walk_ty(&mut ty_context, &decl_context, errors);
+        Checker {
+            ast,
+            decl_context,
+            ty_context
+        }
     }
 }
