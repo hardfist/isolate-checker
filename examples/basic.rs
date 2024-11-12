@@ -12,7 +12,7 @@ fn main() {
     let mut errors = Vec::new();
     let checker = IrContext::new(ast, &mut errors);
     let mut infer = TypeInference::default();
-    let infer_ctx = TyContext::
+    let infer_ctx =  TypeInference::
     //let mut infer_context = Default::default();
     
 }
