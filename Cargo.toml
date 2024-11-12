@@ -5,18 +5,10 @@ edition = "2021"
 
 [dependencies]
 swc_core = { version = "5.0.4", features = [ 
-  "__ecma",
-  "__visit",
-  "__utils",
-  "__ecma_transforms",
   "ecma_ast",
   "ecma_codegen",
+  "ecma_parser",
   "ecma_quote",
-  "common_concurrent",
-  "swc_ecma_ast",
-  "ecma_transforms_react",
-  "ecma_transforms_module",
-  "swc_ecma_codegen",
-  "swc_ecma_visit"
+  "common"
 ]}
 miette = { version = "7.2.0", features = ["fancy"]}

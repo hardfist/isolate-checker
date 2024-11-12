@@ -1,14 +1,14 @@
-use swc_core::ecma::ast::Program;
+use swc_core::{common::SourceFile, ecma::ast::Program};
 use miette::Report;
-use crate::{walk_decl, walk_ty, DeclContext, TyContext};
+use crate::{ast::Ast, walk_decl, walk_ty, DeclContext, TyContext};
 pub struct Checker {
-    pub ast: Program,
+    pub ast: Ast,
     pub decl_context: DeclContext,
     pub ty_context: TyContext
 }
 
 impl Checker {
-    pub fn new(ast: Program, errors: &mut Vec<Report>) -> Checker{
+    pub fn new(ast: Ast, errors: &mut Vec<Report>) -> Checker{
         let mut decl_context = DeclContext::default();
         walk_decl(&mut decl_context, &ast, errors);
         let mut ty_context = TyContext::default();
