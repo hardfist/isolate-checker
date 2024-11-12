@@ -9,7 +9,6 @@ fn main() {
     "#;
 
     let ast = Ast::new_from(code.into());
-    dbg!(&ast);
     let mut errors = Vec::new();
     let ir_ctx = IrContext::new(ast, &mut errors);
     let mut infer = TypeInference::default();
@@ -18,7 +17,7 @@ fn main() {
     for item in ir_ctx.ast.items() {
         infer.infer_item(&infer_ctx, item);
     }
-    errors.extend( infer.reports);
+    errors.append( &mut infer.reports);
 
     let report_hander = miette::GraphicalReportHandler::new();
 
@@ -31,5 +30,11 @@ fn main() {
         io::stdout().write_all(output.as_bytes()).unwrap();
 
     }
+
+    for (node_id, ty) in infer.typemap.clone() {
+        let ty = infer.norm(&ty);
+        dbg!(ty);
+    }
+
     //let mut infer_context = Default::default();
 }

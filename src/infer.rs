@@ -36,6 +36,11 @@ impl TypeInference {
             }
         }
     }
+    pub fn norm(&mut self, ty: &Ty) -> Ty{
+        match &**ty {
+            _ =>ty.clone()
+        }
+    }
 }
 
 pub struct InferContext<'ctx> {

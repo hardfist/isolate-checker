@@ -25,5 +25,5 @@ impl Ast {
     }
 }
 
-#[derive(Debug,Hash,PartialEq, Eq)]
+#[derive(Debug,Hash,PartialEq, Eq,Clone,Copy)]
 pub struct NodeId(u32);
