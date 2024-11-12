@@ -3,6 +3,7 @@ use swc_core::ecma::ast::{Module, Program};
 use swc_core::ecma::parser::{self, Parser, StringInput, TsConfig, TsSyntax};
 use swc_core::common::sync::Lrc;
 
+#[derive(Debug)]
 pub struct Ast {
     module: Module
 }
@@ -18,3 +19,5 @@ impl Ast {
         }
     }
 }
+
+pub struct NodeId(u32);

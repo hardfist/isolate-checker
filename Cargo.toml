@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ra_ap_intern = { version = "0.0.244"}
 swc_core = { version = "5.0.4", features = [ 
   "ecma_ast",
   "ecma_codegen",
