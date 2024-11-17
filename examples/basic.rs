@@ -5,7 +5,9 @@ use isolate_checker::{ast::Ast, InferContext, IrContext, TyContext, TypeInferenc
 fn main() {
     let code = r#"
     let a = 1;
-    let b = 2;
+    let b = a;
+    a;
+    b;
     "#;
 
     let ast = Ast::new_from(code.into());
@@ -17,7 +19,7 @@ fn main() {
     for item in ir_ctx.ast.items() {
         infer.infer_item(&infer_ctx, item);
     }
-    errors.append( &mut infer.reports);
+    errors.append(&mut infer.reports);
 
     let report_hander = miette::GraphicalReportHandler::new();
 
@@ -25,12 +27,13 @@ fn main() {
         let err = err.with_source_code(code);
         let mut output = String::new();
 
-        report_hander.render_report(&mut output, err.as_ref()).unwrap();
+        report_hander
+            .render_report(&mut output, err.as_ref())
+            .unwrap();
 
         io::stdout().write_all(output.as_bytes()).unwrap();
-
     }
-
+    dbg!(&infer.typemap);
     for (node_id, ty) in infer.typemap.clone() {
         let ty = infer.norm(&ty);
         dbg!(ty);

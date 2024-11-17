@@ -5,15 +5,20 @@ edition = "2021"
 
 [dependencies]
 ra_ap_intern = { version = "0.0.244"}
+rangemap = { version = "1.5"}
 swc_core = { version = "5.0.4", features = [ 
   "ecma_ast",
   "ecma_codegen",
   "ecma_parser",
   "ecma_quote",
+  "ecma_visit",
   "common"
 ]}
+ena = { version = "0.14.3"}
 miette = { version = "7.2.0", features = ["fancy"]}
 
 im = { package = "im-rc", version = "15.1"}
 
 la-arena = { version = "0.3"}
+
+thiserror = { version = "2.0.3"}

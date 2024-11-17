@@ -1,5 +1,6 @@
 pub mod ast;
 pub mod checker;
+pub mod error;
 pub mod infer;
 pub mod ir;
 
