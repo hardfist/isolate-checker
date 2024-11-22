@@ -3,13 +3,13 @@ use super::DeclContext;
 use ena::unify::{UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
-use swc_core::ecma::ast::CondExpr;
 pub use tykind::*;
 #[derive(Debug)]
 pub struct TyContext {
     pub string: Ty,
     pub number: Ty,
     pub unknown: Ty,
+    pub error: Ty,
 }
 impl Default for TyContext {
     fn default() -> Self {
@@ -17,6 +17,7 @@ impl Default for TyContext {
             string: Interned::new(TyKind::String),
             number: Interned::new(TyKind::Number),
             unknown: Interned::new(TyKind::Unknown),
+            error: Interned::new(TyKind::Error)
         }
     }
 }

@@ -7,6 +7,7 @@ pub enum TyKind {
     Number,
     String,
     Unknown,
+    Error,
     Fn(Function),
     Infer(InferenceVar),
 }
