@@ -6,6 +6,8 @@ fn main() {
     let code = r#"
     let a = 1;
     let b = a;
+    let c = 'ss';
+    let d;
     a;
     b;
     "#;
@@ -36,7 +38,6 @@ fn main() {
     dbg!(&infer.typemap);
     for (node_id, ty) in infer.typemap.clone() {
         let ty = infer.norm(&ty);
-        dbg!(ty);
     }
 
     //let mut infer_context = Default::default();

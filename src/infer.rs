@@ -1,19 +1,28 @@
-use std::fmt::DebugList;
+use std::fmt::{Debug, DebugList};
 
 use crate::{ast::NodeId, error::UnifyReport, IrContext, Ty};
 use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
 use swc_core::ecma::ast::{
-    Decl, Expr, ExprStmt, FnDecl, Lit, ModuleItem, Pat, SpanExt, Stmt, TsTypeAnn, VarDecl,
+    Decl, Expr, ExprStmt, FnDecl, Ident, Lit, ModuleItem, Pat, SpanExt, Stmt, TsTypeAnn, VarDecl,
     VarDeclarator,
 };
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct TypeInference {
     pub typemap: Vec<(NodeId, Ty)>,
     pub reports: Vec<Report>,
     table: InPlaceUnificationTable<InferenceVar>,
+}
+impl Debug for TypeInference {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("TypeInference")
+            .field("typemap", &self.typemap)
+            .field("reports", &self.reports)
+            .field("table", &self.table)
+            .finish()
+    }
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug, Hash)]
@@ -45,15 +54,15 @@ impl UnifyKey for InferenceVar {
     type Value = InferenceValue;
 
     fn index(&self) -> u32 {
-        todo!()
+        self.0
     }
 
     fn from_index(u: u32) -> Self {
-        todo!()
+        InferenceVar(u)
     }
 
     fn tag() -> &'static str {
-        todo!()
+        "type variable"
     }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -67,7 +76,12 @@ impl TypeInference {
         let var_id = self.table.new_key(InferenceValue::Unknown);
         Interned::new(crate::TyKind::Infer(var_id))
     }
-    pub fn unify_subtype(&mut self, ctx: &InferContext<'_>, x: &Ty, y: &Ty) -> Result<(), UnifyReport> {
+    pub fn unify_subtype(
+        &mut self,
+        ctx: &InferContext<'_>,
+        x: &Ty,
+        y: &Ty,
+    ) -> Result<(), UnifyReport> {
         self.unify(ctx, UnifyMode::Subtype, x, y)
     }
     pub fn unify(
@@ -92,25 +106,20 @@ impl TypeInference {
                 let got_ty = self.infer_expr(ctx, expr);
                 match is_subtype(&expected_ty, &got_ty) {
                     Some(true) => (),
-                    Some(false) => {
-
-                    },
+                    Some(false) => {}
                     None => {
                         let result = self.unify_subtype(ctx, &expected_ty, &got_ty);
                         self.report(expr.into(), result);
                     }
                 }
-                
             }
         }
     }
 }
-fn is_subtype(x:&Ty, y: &Ty) -> Option<bool> {
+fn is_subtype(x: &Ty, y: &Ty) -> Option<bool> {
     match (x.as_ref(), y.as_ref()) {
         (..) if x == y => Some(true),
-        _ => {
-            Some(false)
-        }
+        _ => Some(false),
     }
 }
 impl TypeInference {
@@ -159,18 +168,20 @@ impl TypeInference {
         }
     }
 
-    pub fn infer_expr_stmt(&mut self, ctx: &InferContext<'_>, expr: &ExprStmt) -> Ty{
+    pub fn infer_expr_stmt(&mut self, ctx: &InferContext<'_>, expr: &ExprStmt) -> Ty {
         self.infer_expr(ctx, &expr.expr)
     }
-    pub fn infer_expr(&mut self, ctx: &InferContext<'_>, expr: &Expr) -> Ty{
+    pub fn infer_expr(&mut self, ctx: &InferContext<'_>, expr: &Expr) -> Ty {
         match expr {
-            Expr::Lit(lit) => {
-                self.infer_lit(ctx, lit)
-            }
+            Expr::Lit(lit) => self.infer_lit(ctx, lit),
+            Expr::Ident(id) => self.infer_id(ctx, id),
             _ => {
                 todo!()
             }
         }
+    }
+    pub fn infer_id(&mut self, ctx: &InferContext<'_>, id: &Ident) -> Ty {
+        ctx.ir_ctx.ty_ctx.unknown.clone()
     }
     pub fn infer_lit(&mut self, ctx: &InferContext<'_>, lit: &Lit) -> Ty {
         let ty = match lit {
