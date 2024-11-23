@@ -17,7 +17,7 @@ impl Default for TyContext {
             string: Interned::new(TyKind::String),
             number: Interned::new(TyKind::Number),
             unknown: Interned::new(TyKind::Unknown),
-            error: Interned::new(TyKind::Error)
+            error: Interned::new(TyKind::Error),
         }
     }
 }

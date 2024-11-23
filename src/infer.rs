@@ -183,12 +183,8 @@ impl TypeInference {
     pub fn infer_id(&mut self, ctx: &InferContext<'_>, id: &Ident) -> Ty {
         let name = id.sym.to_string();
         let ty = match ctx.env.get(&name) {
-            Some(ty) => {
-                ty.clone()
-            },
-            None => {
-                ctx.ir_ctx.ty_ctx.error.clone()
-            }
+            Some(ty) => ty.clone(),
+            None => ctx.ir_ctx.ty_ctx.error.clone(),
         };
         ty
     }
