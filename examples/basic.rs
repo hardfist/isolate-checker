@@ -1,4 +1,4 @@
-use std::io::{self, Write};
+use std::{io::{self, Write}, sync::Arc};
 
 use isolate_checker::{ast::Ast, InferContext, IrContext, TyContext, TypeInference};
 
@@ -12,7 +12,7 @@ fn main() {
     b;
     "#;
 
-    let ast = Ast::new_from(code.into());
+    let ast = Ast::new_from(Arc::new(code.to_string()));
     let mut errors = Vec::new();
     let ir_ctx = IrContext::new(ast, &mut errors);
     let mut infer = TypeInference::default();

@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use swc_core::common::sync::Lrc;
 use swc_core::common::{FileName, SourceMap, Span, Spanned};
 use swc_core::ecma::ast::{Expr, Lit, Module, ModuleItem, Program, Stmt, VarDeclarator};
@@ -9,9 +11,9 @@ pub struct Ast {
 }
 
 impl Ast {
-    pub fn new_from(code: String) -> Ast {
+    pub fn new_from(code: Arc<String>) -> Ast {
         let cm: Lrc<SourceMap> = Default::default();
-        let fm = cm.new_source_file(FileName::Custom("test.ts".to_string()).into(), code);
+        let fm = cm.new_source_file(FileName::Custom("test.ts".to_string()).into(), code.to_string());
         let mut parser = Parser::new(
             parser::Syntax::Typescript(TsSyntax::default()),
             StringInput::from(&*fm),

@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+compiletest_rs = { version = "0.11.1"}
 ra_ap_intern = { version = "0.0.244"}
 rangemap = { version = "1.5"}
 swc_core = { version = "5.0.4", features = [ 
