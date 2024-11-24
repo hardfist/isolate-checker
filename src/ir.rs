@@ -7,14 +7,14 @@ pub use ty::*;
 use miette::Report;
 
 use crate::ast::Ast;
-pub struct IrContext {
-    pub ast: Ast,
+pub struct IrContext<'a> {
+    pub ast: &'a Ast,
     pub decl_ctx: DeclContext,
     pub ty_ctx: TyContext,
 }
 
-impl IrContext {
-    pub fn new(ast: Ast, errors: &mut Vec<Report>) -> IrContext {
+impl<'a> IrContext<'a> {
+    pub fn new(ast: &'a Ast, errors: &mut Vec<Report>) -> IrContext<'a> {
         let mut decl_context = DeclContext::default();
         walk_decl(&mut decl_context, &ast, errors);
         let mut ty_context = TyContext::default();

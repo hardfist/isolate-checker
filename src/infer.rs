@@ -229,7 +229,7 @@ impl TypeInference {
 }
 
 pub struct InferContext<'ctx> {
-    ir_ctx: &'ctx IrContext,
+    ir_ctx: &'ctx IrContext<'ctx>,
     env: im::HashMap<String, Ty>,
     type_args: Vec<Ty>,
     block: BlockCtx,

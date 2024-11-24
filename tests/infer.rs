@@ -1,8 +1,8 @@
-use std::path::Path;
-use std::fs;
-use std::sync::Arc;
 use isolate_checker::ModuleChecker;
 use miette::IntoDiagnostic;
+use std::fs;
+use std::path::Path;
+use std::sync::Arc;
 
 #[test]
 pub fn run_test() -> miette::Result<()> {

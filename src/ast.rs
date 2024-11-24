@@ -13,7 +13,10 @@ pub struct Ast {
 impl Ast {
     pub fn new_from(code: Arc<String>) -> Ast {
         let cm: Lrc<SourceMap> = Default::default();
-        let fm = cm.new_source_file(FileName::Custom("test.ts".to_string()).into(), code.to_string());
+        let fm = cm.new_source_file(
+            FileName::Custom("test.ts".to_string()).into(),
+            code.to_string(),
+        );
         let mut parser = Parser::new(
             parser::Syntax::Typescript(TsSyntax::default()),
             StringInput::from(&*fm),
