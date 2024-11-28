@@ -3,7 +3,7 @@ use std::{
     sync::Arc,
 };
 use miette::Result;
-use isolate_checker::{ast::Ast, InferContext, IrContext, TyContext, TypeInference};
+use isolate_checker::{ast::Ast, hir_ctx::IrContext, infer::{InferContext, TypeInference}};
 
 fn main() -> Result<()> {
     let code = r#"

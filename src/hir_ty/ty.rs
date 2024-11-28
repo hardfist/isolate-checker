@@ -1,9 +1,11 @@
-mod tykind;
-use super::DeclContext;
+
 use ena::unify::{UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
-pub use tykind::*;
+
+use crate::hir::DeclContext;
+
+use super::TyKind;
 #[derive(Debug)]
 pub struct TyContext {
     pub string: Ty,

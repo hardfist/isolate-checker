@@ -1,4 +1,4 @@
-use isolate_checker::ModuleChecker;
+use isolate_checker::checker::ModuleChecker;
 use miette::IntoDiagnostic;
 use std::fs;
 use std::path::Path;

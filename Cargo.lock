@@ -111,6 +111,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "biome"
+version = "0.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24d2201e496714a969510060cc9b8d449a4bd8de15822b0debee5d5b7be14ed3"
+
+[[package]]
 name = "bitflags"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -688,6 +694,7 @@ checksum = "7655c9839580ee829dfacba1d1278c2b7883e50a277ff7541299489d6bdfdc45"
 name = "isolate-checker"
 version = "0.1.0"
 dependencies = [
+ "biome",
  "compiletest_rs",
  "ena",
  "im-rc",
@@ -1944,7 +1951,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]

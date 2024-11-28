@@ -1,6 +1,8 @@
-use crate::InferenceVar;
+use crate::infer::InferenceVar;
 
 use super::Ty;
+
+
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub enum TyKind {

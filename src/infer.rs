@@ -1,6 +1,7 @@
 use std::fmt::{Debug, DebugList};
-
-use crate::{ast::NodeId, error::UnifyReport, IrContext, Ty};
+use crate::hir_ctx::IrContext;
+use crate::hir_ty::{Ty, TyKind};
+use crate::{ast::NodeId, error::UnifyReport};
 use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
@@ -74,7 +75,7 @@ pub enum UnifyMode {
 impl TypeInference {
     fn new_var(&mut self) -> Ty {
         let var_id = self.table.new_key(InferenceValue::Unknown);
-        Interned::new(crate::TyKind::Infer(var_id))
+        Interned::new(TyKind::Infer(var_id))
     }
     pub fn unify_subtype(
         &mut self,

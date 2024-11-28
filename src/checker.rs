@@ -6,7 +6,8 @@ use std::{
     sync::Arc,
 };
 
-use crate::{ast::Ast, InferContext, IrContext, TypeInference};
+use crate::{ast::Ast, hir_ctx::IrContext, infer::{InferContext, TypeInference}};
+
 
 pub struct ModuleChecker {
     errors: RefCell<Vec<Report>>,
