@@ -13,7 +13,8 @@ swc_core = { version = "5.0.4", features = [
   "ecma_parser",
   "ecma_quote",
   "ecma_visit",
-  "common"
+  "common",
+  "common_tty"
 ]}
 ena = { version = "0.14.3"}
 miette = { version = "7.2.0", features = ["fancy"]}

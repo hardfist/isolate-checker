@@ -1,4 +1,5 @@
-use miette::Report;
+use miette::{Report,Result};
+use swc_core::ecma::codegen::{Config, Emitter};
 use std::{
     cell::{LazyCell, RefCell},
     io::{self, Write},
@@ -13,13 +14,13 @@ pub struct ModuleChecker {
     ast: Ast,
 }
 impl ModuleChecker {
-    pub fn new(code: Arc<String>) -> ModuleChecker {
-        let ast: Ast = Ast::new_from(code.clone());
-        Self {
+    pub fn new(code: Arc<String>) -> Result<ModuleChecker> {
+        let ast: Ast = Ast::new_from(code.clone())?;
+        Ok(Self {
             errors: RefCell::new(vec![]),
             code,
             ast,
-        }
+        })
     }
 }
 impl ModuleChecker {

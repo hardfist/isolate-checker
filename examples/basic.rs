@@ -2,10 +2,10 @@ use std::{
     io::{self, Write},
     sync::Arc,
 };
-
+use miette::Result;
 use isolate_checker::{ast::Ast, InferContext, IrContext, TyContext, TypeInference};
 
-fn main() {
+fn main() -> Result<()> {
     let code = r#"
     let a = 1;
     let b = a;
@@ -15,7 +15,7 @@ fn main() {
     b;
     "#;
 
-    let ast = Ast::new_from(Arc::new(code.to_string()));
+    let ast = Ast::new_from(Arc::new(code.to_string()))?;
     let mut errors = Vec::new();
     let ir_ctx = IrContext::new(&ast, &mut errors);
     let mut infer = TypeInference::default();
@@ -42,6 +42,6 @@ fn main() {
     for (node_id, ty) in infer.typemap.clone() {
         let ty = infer.norm(&ty);
     }
-
+    Ok(())
     //let mut infer_context = Default::default();
 }
