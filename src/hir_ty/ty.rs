@@ -2,7 +2,7 @@
 use miette::Report;
 use ra_ap_intern::Interned;
 
-use crate::hir::DeclContext;
+use crate::hir::{DeclContext, DeclKind};
 
 use super::TyKind;
 #[derive(Debug)]
@@ -28,5 +28,18 @@ pub type Ty = Interned<TyKind>;
 ra_ap_intern::impl_internable!(TyKind);
 
 pub fn walk_ty(ty_context: &mut TyContext, decl_ctx: &DeclContext, errors: &mut Vec<Report>) {
-    for (decl_id, decl) in decl_ctx.decls.iter() {}
+    for (decl_id, decl) in decl_ctx.decls.iter() {
+        match &decl.kind {
+            DeclKind::Var(node)=> {
+                dbg!(node);
+            },
+            DeclKind::Fn(node) => {
+                dbg!(node);
+            },
+            DeclKind::TypeAlias(node) => {
+                dbg!(node);
+            }
+
+        }
+    }
 }

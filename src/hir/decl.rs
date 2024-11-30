@@ -4,7 +4,7 @@ use im::HashMap;
 use la_arena::{Arena, Idx};
 use miette::Report;
 use rangemap::RangeMap;
-use swc_core::common::BytePos;
+use swc_core::common::{BytePos, Span, Spanned};
 use swc_core::ecma::ast::{Id, Pat, TsTypeAliasDecl, VarDeclarator};
 use swc_core::ecma::visit::{self, VisitWith};
 use swc_core::ecma::{ast::FnDecl, visit::Visit};
@@ -13,7 +13,7 @@ use swc_core::ecma::{ast::FnDecl, visit::Visit};
 pub struct DeclContext {
     pub root_scope: ScopeId,
     pub scopes: Arena<Scope>,
-    pub node2decl: HashMap<Id, DeclId>,
+    pub node2decl: HashMap<Span, DeclId>,
     pub decls: Arena<Decl>,
     pub scopemap: RangeMap<BytePos, ScopeId>,
 }
@@ -62,13 +62,11 @@ pub fn walk_decl(decl_ctx: &mut DeclContext, ast: &Ast, errors: &mut Vec<Report>
         fn visit_var_declarator(&mut self, node: &visit::swc_ecma_ast::VarDeclarator) {
             match &node.name {
                 Pat::Ident(id) => {
-                    let name = id.sym.to_string();
                     let decl_id = self.decl_ctx.decls.alloc(Decl {
                         scope: self.current,
                         kind: DeclKind::Var(node.clone()),
                     });
-                    let id = id.to_id();
-                    self.decl_ctx.node2decl.insert(id, decl_id);
+                    self.decl_ctx.node2decl.insert(id.span(), decl_id);
                 }
                 _ => {
                     todo!("not support yet")
@@ -81,7 +79,13 @@ pub fn walk_decl(decl_ctx: &mut DeclContext, ast: &Ast, errors: &mut Vec<Report>
                 scope: self.current,
                 kind: DeclKind::Fn(node.clone()),
             });
-            //let current = self.decl_ctx.alloc_scope(current, decl_id);
+            
+            let current = self.decl_ctx.alloc_scope(self.current, Some(decl_id));
+            let old_current = self.current;
+            self.current = current;
+            node.visit_children_with(self);
+            self.current = old_current;
+
         }
     }
     ast.module.visit_with(&mut DeclVisitor {

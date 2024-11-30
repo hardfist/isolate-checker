@@ -5,8 +5,9 @@ use crate::{ error::UnifyReport};
 use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
+use swc_core::common::Span;
 use swc_core::ecma::ast::{
-    Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, Stmt, TsTypeAnn, VarDecl, VarDeclarator
+    Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, Stmt, TsKeywordTypeKind, TsTypeAnn, VarDecl, VarDeclarator
 };
 
 #[derive(Default)]
@@ -131,7 +132,22 @@ impl TypeInference {
     }
     // infer type for type_node
     pub fn infer_type_node(&mut self, ctx: &InferContext<'_>, ty_node: &TsTypeAnn) -> Ty {
-        todo!()
+        use swc_core::ecma::ast::TsType;
+        match ty_node.type_ann.as_ref() {
+            TsType::TsKeywordType(t) => {
+                match t.kind {
+                    TsKeywordTypeKind::TsNumberKeyword => {
+                        todo!()
+                    },
+                    _ => {
+                        todo!()
+                    }
+                }
+            },
+            _ => {
+                todo!()
+            }
+        }
     }
     pub fn infer_module_decl(&mut self) {}
     // let a: number = 10
