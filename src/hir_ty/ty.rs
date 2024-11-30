@@ -1,5 +1,4 @@
 
-use ena::unify::{UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
 

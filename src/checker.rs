@@ -1,8 +1,6 @@
 use miette::{Report,Result};
-use swc_core::ecma::codegen::{Config, Emitter};
 use std::{
-    cell::{LazyCell, RefCell},
-    io::{self, Write},
+    cell::RefCell,
     sync::Arc,
 };
 
@@ -26,7 +24,7 @@ impl ModuleChecker {
 }
 impl ModuleChecker {
     pub fn extends_errors(&self, errors: Vec<Report>) {
-        self.errors.borrow_mut().extend(errors.into_iter());
+        self.errors.borrow_mut().extend(errors);
     }
     pub fn check(&self) {
         let mut errors = Vec::new();

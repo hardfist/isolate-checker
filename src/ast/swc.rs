@@ -2,11 +2,11 @@ use std::sync::Arc;
 use miette::{miette, Result};
 use swc_core::common::errors::{Handler,ColorConfig};
 use swc_core::common::sync::Lrc;
-use swc_core::common::{BytePos, FileName, LineCol, SourceMap, Span, Spanned, DUMMY_SP};
-use swc_core::ecma::ast::{Expr, Lit, Module, ModuleItem, Program, Stmt, VarDeclarator};
+use swc_core::common::{BytePos, FileName, LineCol, SourceMap};
+use swc_core::ecma::ast::{Module, ModuleItem, Program};
 use swc_core::ecma::codegen::text_writer::JsWriter;
 use swc_core::ecma::codegen::{Config, Emitter};
-use swc_core::ecma::parser::{self, Parser, StringInput, TsConfig, TsSyntax};
+use swc_core::ecma::parser::{self, Parser, StringInput, TsSyntax};
 
 #[derive(Debug)]
 pub struct Ast {

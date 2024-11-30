@@ -1,4 +1,3 @@
-use std::task::Context;
 
 use crate::ast::{Ast};
 use im::HashMap;
@@ -6,7 +5,7 @@ use la_arena::{Arena, Idx};
 use miette::Report;
 use rangemap::RangeMap;
 use swc_core::common::BytePos;
-use swc_core::ecma::ast::{Id, Pat, TsTypeAliasDecl, VarDecl, VarDeclarator};
+use swc_core::ecma::ast::{Id, Pat, TsTypeAliasDecl, VarDeclarator};
 use swc_core::ecma::visit::{self, VisitWith};
 use swc_core::ecma::{ast::FnDecl, visit::Visit};
 

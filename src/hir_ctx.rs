@@ -10,7 +10,7 @@ pub struct IrContext<'a> {
 impl<'a> IrContext<'a> {
     pub fn new(ast: &'a Ast, errors: &mut Vec<Report>) -> IrContext<'a> {
         let mut decl_context = DeclContext::default();
-        walk_decl(&mut decl_context, &ast, errors);
+        walk_decl(&mut decl_context, ast, errors);
         let mut ty_context = TyContext::default();
         walk_ty(&mut ty_context, &decl_context, errors);
         IrContext {

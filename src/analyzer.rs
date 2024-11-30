@@ -1,8 +1,5 @@
-use petgraph::graph::DiGraph;
-use swc_core::{common::{ Mark}, ecma::{ast::Id, parser::parse_file_as_module, transforms::base::resolver, visit::{Visit, VisitWith}}};
-use swc_core::ecma::ast::{self, Decl};
-use swc_core::common::{GLOBALS,Globals};
-use crate::{ast::Ast};
+use swc_core::ecma::visit::Visit;
+use swc_core::ecma::ast::{self};
 
 struct Analyzer {
     
@@ -17,6 +14,14 @@ impl Visit for Analyzer {
         
     }
 }
+#[cfg(test)]
+mod test {
+    use swc_core::{common::{Globals, Mark, GLOBALS}, ecma::{transforms::base::resolver, visit::VisitWith}};
+
+    use crate::ast::Ast;
+
+    use super::Analyzer;
+
 
 #[test]
 fn test_analyzer(){
@@ -39,4 +44,5 @@ fn test_analyzer(){
     });
     
 
+}
 }

@@ -1,4 +1,4 @@
-use std::fmt::{Debug, DebugList};
+use std::fmt::Debug;
 use crate::hir_ctx::IrContext;
 use crate::hir_ty::{Ty, TyKind};
 use crate::{ error::UnifyReport};
@@ -6,7 +6,7 @@ use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
 use swc_core::ecma::ast::{
-    Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, SpanExt, Stmt, TsTypeAnn, VarDecl, VarDeclarator
+    Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, Stmt, TsTypeAnn, VarDecl, VarDeclarator
 };
 
 #[derive(Default)]
@@ -148,7 +148,7 @@ impl TypeInference {
         };
         // check anno_ty with init_ty
         if let Some(init_expr) = &decl.init {
-            self.check(ctx, &init_expr, anno_ty);
+            self.check(ctx, init_expr, anno_ty);
         }
     }
     pub fn infer_var_decl(&mut self, ctx: &InferContext<'_>, var_decl: &VarDecl) {
@@ -189,12 +189,12 @@ impl TypeInference {
         ty
     }
     pub fn infer_lit(&mut self, ctx: &InferContext<'_>, lit: &Lit) -> Ty {
-        let ty = match lit {
+        
+        match lit {
             Lit::Num(_) => ctx.ir_ctx.ty_ctx.string.clone(),
             Lit::Str(_) => ctx.ir_ctx.ty_ctx.number.clone(),
             _ => ctx.ir_ctx.ty_ctx.unknown.clone(),
-        };
-        ty
+        }
     }
     pub fn infer_stmt(&mut self, ctx: &InferContext<'_>, stmt: &Stmt) {
         match stmt {
@@ -220,9 +220,7 @@ impl TypeInference {
     }
     // FIXME: what does norm do?
     pub fn norm(&mut self, ty: &Ty) -> Ty {
-        match &**ty {
-            _ => ty.clone(),
-        }
+        ty.clone()
     }
 }
 
@@ -236,7 +234,7 @@ pub struct InferContext<'ctx> {
 impl<'ctx> InferContext<'ctx> {
     pub fn new(ctx: &'ctx IrContext) -> InferContext<'ctx> {
         InferContext {
-            ir_ctx: &ctx,
+            ir_ctx: ctx,
             env: Default::default(),
             type_args: Default::default(),
             block: Default::default(),

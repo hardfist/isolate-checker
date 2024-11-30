@@ -38,9 +38,9 @@ fn main() -> Result<()> {
 
         io::stdout().write_all(output.as_bytes()).unwrap();
     }
-    dbg!(&infer.typemap);
-    for (node_id, ty) in infer.typemap.clone() {
+    for (id, ty) in infer.typemap.clone() {
         let ty = infer.norm(&ty);
+        dbg!(id,ty);
     }
     Ok(())
     //let mut infer_context = Default::default();
