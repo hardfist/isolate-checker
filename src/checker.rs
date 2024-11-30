@@ -4,7 +4,7 @@ use std::{
     sync::Arc,
 };
 
-use crate::{ast::Ast, hir_ctx::IrContext, infer::{InferContext, TypeInference}};
+use crate::{ast::Ast, hir_ctx::HirCtx, infer::{InferContext, TypeInference}};
 
 
 pub struct ModuleChecker {
@@ -28,11 +28,11 @@ impl ModuleChecker {
     }
     pub fn check(&self) {
         let mut errors = Vec::new();
-        let ir_ctx = IrContext::new(&self.ast, &mut errors);
+        let hir_ctx = HirCtx::new(&self.ast, &mut errors);
         let mut infer = TypeInference::default();
-        let infer_ctx = InferContext::new(&ir_ctx);
+        let infer_ctx = InferContext::new(&hir_ctx);
 
-        for item in ir_ctx.ast.items() {
+        for item in hir_ctx.ast.items() {
             infer.infer_item(&infer_ctx, item);
         }
 

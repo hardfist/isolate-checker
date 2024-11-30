@@ -1,5 +1,5 @@
 use std::fmt::Debug;
-use crate::hir_ctx::IrContext;
+use crate::hir_ctx::HirCtx;
 use crate::hir_ty::{Ty, TyKind};
 use crate::{ error::UnifyReport};
 use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
@@ -225,14 +225,14 @@ impl TypeInference {
 }
 
 pub struct InferContext<'ctx> {
-    ir_ctx: &'ctx IrContext<'ctx>,
+    ir_ctx: &'ctx HirCtx<'ctx>,
     env: im::HashMap<String, Ty>,
     type_args: Vec<Ty>,
     block: BlockCtx,
 }
 
 impl<'ctx> InferContext<'ctx> {
-    pub fn new(ctx: &'ctx IrContext) -> InferContext<'ctx> {
+    pub fn new(ctx: &'ctx HirCtx) -> InferContext<'ctx> {
         InferContext {
             ir_ctx: ctx,
             env: Default::default(),
