@@ -1,18 +1,17 @@
 use std::fmt::{Debug, DebugList};
 use crate::hir_ctx::IrContext;
 use crate::hir_ty::{Ty, TyKind};
-use crate::{ast::NodeId, error::UnifyReport};
+use crate::{ error::UnifyReport};
 use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
 use swc_core::ecma::ast::{
-    Decl, Expr, ExprStmt, FnDecl, Ident, Lit, ModuleItem, Pat, SpanExt, Stmt, TsTypeAnn, VarDecl,
-    VarDeclarator,
+    Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, SpanExt, Stmt, TsTypeAnn, VarDecl, VarDeclarator
 };
 
 #[derive(Default)]
 pub struct TypeInference {
-    pub typemap: Vec<(NodeId, Ty)>,
+    pub typemap: Vec<(Id, Ty)>,
     pub reports: Vec<Report>,
     table: InPlaceUnificationTable<InferenceVar>,
 }
@@ -110,7 +109,7 @@ impl TypeInference {
                     Some(false) => {}
                     None => {
                         let result = self.unify_subtype(ctx, &expected_ty, &got_ty);
-                        self.report(expr.into(), result);
+                        self.report( result);
                     }
                 }
             }
@@ -125,7 +124,7 @@ fn is_subtype(x: &Ty, y: &Ty) -> Option<bool> {
 }
 impl TypeInference {
     // report error
-    fn report(&mut self, node: NodeId, result: Result<(), UnifyReport>) {
+    fn report(&mut self, result: Result<(), UnifyReport>) {
         if let Err(report) = result {
             self.reports.push(report.into());
         }
@@ -195,8 +194,6 @@ impl TypeInference {
             Lit::Str(_) => ctx.ir_ctx.ty_ctx.number.clone(),
             _ => ctx.ir_ctx.ty_ctx.unknown.clone(),
         };
-
-        self.typemap.push((NodeId::from_lit(lit), ty.clone()));
         ty
     }
     pub fn infer_stmt(&mut self, ctx: &InferContext<'_>, stmt: &Stmt) {

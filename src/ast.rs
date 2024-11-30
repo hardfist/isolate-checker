@@ -1,3 +1,3 @@
 mod swc;
 mod biome;
-pub use swc::{Ast,NodeId};
+pub use swc::Ast;

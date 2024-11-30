@@ -11,6 +11,7 @@ biome = { version = "*"}
 swc_core = { version = "5.0.4", features = [ 
   "ecma_ast",
   "ecma_codegen",
+  "ecma_transforms",
   "ecma_parser",
   "ecma_quote",
   "ecma_visit",
@@ -25,3 +26,5 @@ im = { package = "im-rc", version = "15.1"}
 la-arena = { version = "0.3"}
 
 thiserror = { version = "2.0.3"}
+
+petgraph = { version = "0.6.5"}

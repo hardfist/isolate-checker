@@ -1,12 +1,12 @@
 use std::task::Context;
 
-use crate::ast::{Ast, NodeId};
+use crate::ast::{Ast};
 use im::HashMap;
 use la_arena::{Arena, Idx};
 use miette::Report;
 use rangemap::RangeMap;
 use swc_core::common::BytePos;
-use swc_core::ecma::ast::{Pat, TsTypeAliasDecl, VarDecl, VarDeclarator};
+use swc_core::ecma::ast::{Id, Pat, TsTypeAliasDecl, VarDecl, VarDeclarator};
 use swc_core::ecma::visit::{self, VisitWith};
 use swc_core::ecma::{ast::FnDecl, visit::Visit};
 
@@ -14,7 +14,7 @@ use swc_core::ecma::{ast::FnDecl, visit::Visit};
 pub struct DeclContext {
     pub root_scope: ScopeId,
     pub scopes: Arena<Scope>,
-    pub node2decl: HashMap<NodeId, DeclId>,
+    pub node2decl: HashMap<Id, DeclId>,
     pub decls: Arena<Decl>,
     pub scopemap: RangeMap<BytePos, ScopeId>,
 }
@@ -68,8 +68,8 @@ pub fn walk_decl(decl_ctx: &mut DeclContext, ast: &Ast, errors: &mut Vec<Report>
                         scope: self.current,
                         kind: DeclKind::Var(node.clone()),
                     });
-                    let node_id = NodeId::from_declarator(node);
-                    self.decl_ctx.node2decl.insert(node_id, decl_id);
+                    let id = id.to_id();
+                    self.decl_ctx.node2decl.insert(id, decl_id);
                 }
                 _ => {
                     todo!("not support yet")
