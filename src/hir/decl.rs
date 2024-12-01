@@ -1,5 +1,4 @@
-
-use crate::ast::{Ast};
+use crate::ast::Ast;
 use im::HashMap;
 use la_arena::{Arena, Idx};
 use miette::Report;
@@ -13,8 +12,8 @@ use swc_core::ecma::{ast::FnDecl, visit::Visit};
 pub struct DeclContext {
     pub root_scope: ScopeId,
     pub scopes: Arena<Scope>,
-    pub node2decl: HashMap<Span, DeclId>,
-    pub decls: Arena<Decl>,
+    pub node2decl: HashMap<Span, DefId>,
+    pub decls: Arena<Def>,
     pub scopemap: RangeMap<BytePos, ScopeId>,
 }
 impl Default for DeclContext {
@@ -31,14 +30,14 @@ impl Default for DeclContext {
     }
 }
 impl DeclContext {
-    pub fn alloc_scope(&mut self, current: ScopeId, decl_id: Option<DeclId>) -> ScopeId {
+    pub fn alloc_scope(&mut self, current: ScopeId, decl_id: Option<DefId>) -> ScopeId {
         self.scopes.alloc(Scope {
             decl_id,
             parent: Some(current),
             decl_map: Default::default(),
         })
     }
-    pub fn find_decl(&self, mut scope_id: ScopeId, name: &str) -> Option<DeclId> {
+    pub fn find_decl(&self, mut scope_id: ScopeId, name: &str) -> Option<DefId> {
         loop {
             let scope = &self.scopes[scope_id];
             if let Some(decl_id) = scope.decl_map.get(name).copied() {
@@ -59,33 +58,17 @@ pub fn walk_decl(decl_ctx: &mut DeclContext, ast: &Ast, errors: &mut Vec<Report>
         current: ScopeId,
     }
     impl<'a> Visit for DeclVisitor<'a> {
-        fn visit_var_declarator(&mut self, node: &visit::swc_ecma_ast::VarDeclarator) {
-            match &node.name {
-                Pat::Ident(id) => {
-                    let decl_id = self.decl_ctx.decls.alloc(Decl {
-                        scope: self.current,
-                        kind: DeclKind::Var(node.clone()),
-                    });
-                    self.decl_ctx.node2decl.insert(id.span(), decl_id);
-                }
-                _ => {
-                    todo!("not support yet")
-                }
-            }
-        }
         // scope
         fn visit_fn_decl(&mut self, node: &FnDecl) {
-            let decl_id = self.decl_ctx.decls.alloc(Decl {
+            let decl_id = self.decl_ctx.decls.alloc(Def {
                 scope: self.current,
-                kind: DeclKind::Fn(node.clone()),
+                kind: DefKind::Fn(node.clone()),
             });
-            
             let current = self.decl_ctx.alloc_scope(self.current, Some(decl_id));
             let old_current = self.current;
             self.current = current;
             node.visit_children_with(self);
             self.current = old_current;
-
         }
     }
     ast.module.visit_with(&mut DeclVisitor {
@@ -95,28 +78,27 @@ pub fn walk_decl(decl_ctx: &mut DeclContext, ast: &Ast, errors: &mut Vec<Report>
 }
 
 #[derive(Debug)]
-pub struct Decl {
+pub struct Def {
     pub scope: ScopeId,
-    pub kind: DeclKind,
+    pub kind: DefKind,
 }
 
 // FIXME: AST Clone is expensive, maybe we need to use NodeId in the future
 #[derive(Debug)]
-pub enum DeclKind {
+pub enum DefKind {
     Fn(FnDecl),
-    Var(VarDeclarator),
     TypeAlias(TsTypeAliasDecl),
 }
 
-pub type DeclId = Idx<Decl>;
+pub type DefId = Idx<Def>;
 
 /// scope
 ///
 #[derive(Debug, Default)]
 pub struct Scope {
-    pub decl_id: Option<DeclId>,
+    pub decl_id: Option<DefId>,
     pub parent: Option<ScopeId>,
-    pub decl_map: HashMap<String, DeclId>,
+    pub decl_map: HashMap<String, DefId>,
 }
 
 pub type ScopeId = Idx<Scope>;

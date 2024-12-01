@@ -1,13 +1,14 @@
-use std::fmt::Debug;
+use crate::error::UnifyReport;
 use crate::hir_ctx::HirCtx;
 use crate::hir_ty::{Ty, TyKind};
-use crate::{ error::UnifyReport};
 use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
+use std::fmt::Debug;
 use swc_core::common::Span;
 use swc_core::ecma::ast::{
-    Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, Stmt, TsKeywordTypeKind, TsTypeAnn, VarDecl, VarDeclarator
+    Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, Stmt, TsKeywordTypeKind,
+    TsTypeAnn, VarDecl, VarDeclarator,
 };
 
 #[derive(Default)]
@@ -110,7 +111,7 @@ impl TypeInference {
                     Some(false) => {}
                     None => {
                         let result = self.unify_subtype(ctx, &expected_ty, &got_ty);
-                        self.report( result);
+                        self.report(result);
                     }
                 }
             }
@@ -134,14 +135,12 @@ impl TypeInference {
     pub fn infer_type_node(&mut self, ctx: &InferContext<'_>, ty_node: &TsTypeAnn) -> Ty {
         use swc_core::ecma::ast::TsType;
         match ty_node.type_ann.as_ref() {
-            TsType::TsKeywordType(t) => {
-                match t.kind {
-                    TsKeywordTypeKind::TsNumberKeyword => {
-                        todo!()
-                    },
-                    _ => {
-                        todo!()
-                    }
+            TsType::TsKeywordType(t) => match t.kind {
+                TsKeywordTypeKind::TsNumberKeyword => {
+                    todo!()
+                }
+                _ => {
+                    todo!()
                 }
             },
             _ => {
@@ -205,7 +204,6 @@ impl TypeInference {
         ty
     }
     pub fn infer_lit(&mut self, ctx: &InferContext<'_>, lit: &Lit) -> Ty {
-        
         match lit {
             Lit::Num(_) => ctx.ir_ctx.ty_ctx.string.clone(),
             Lit::Str(_) => ctx.ir_ctx.ty_ctx.number.clone(),

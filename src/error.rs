@@ -1,4 +1,3 @@
-
 use miette::{Diagnostic, Report, SourceSpan};
 use thiserror::Error;
 

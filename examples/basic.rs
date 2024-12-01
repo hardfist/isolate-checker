@@ -1,9 +1,13 @@
+use isolate_checker::{
+    ast::Ast,
+    hir_ctx::HirCtx,
+    infer::{InferContext, TypeInference},
+};
+use miette::Result;
 use std::{
     io::{self, Write},
     sync::Arc,
 };
-use miette::Result;
-use isolate_checker::{ast::Ast, hir_ctx::HirCtx, infer::{InferContext, TypeInference}};
 
 fn main() -> Result<()> {
     let code = r#"
@@ -40,7 +44,7 @@ fn main() -> Result<()> {
     }
     for (id, ty) in infer.typemap.clone() {
         let ty = infer.norm(&ty);
-        dbg!(id,ty);
+        dbg!(id, ty);
     }
     Ok(())
     //let mut infer_context = Default::default();

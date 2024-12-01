@@ -1,3 +1,3 @@
-mod swc;
 mod biome;
+mod swc;
 pub use swc::Ast;

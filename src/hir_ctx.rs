@@ -1,6 +1,10 @@
 use miette::Report;
 
-use crate::{ast::Ast, hir::{walk_decl, DeclContext}, hir_ty::{walk_ty, TyContext}};
+use crate::{
+    ast::Ast,
+    hir::{walk_decl, DeclContext},
+    hir_ty::{walk_ty, TyContext},
+};
 pub struct HirCtx<'a> {
     pub ast: &'a Ast,
     pub decl_ctx: DeclContext,

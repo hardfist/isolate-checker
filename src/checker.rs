@@ -1,11 +1,11 @@
-use miette::{Report,Result};
-use std::{
-    cell::RefCell,
-    sync::Arc,
+use miette::{Report, Result};
+use std::{cell::RefCell, sync::Arc};
+
+use crate::{
+    ast::Ast,
+    hir_ctx::HirCtx,
+    infer::{InferContext, TypeInference},
 };
-
-use crate::{ast::Ast, hir_ctx::HirCtx, infer::{InferContext, TypeInference}};
-
 
 pub struct ModuleChecker {
     errors: RefCell<Vec<Report>>,
