@@ -2,7 +2,7 @@ use miette::Report;
 
 use crate::{
     ast::Ast,
-    hir::{build_scope, ScopeContext},
+    scope::{build_scope, ScopeContext},
     hir_ty::{TyContext},
 };
 pub struct HirCtx<'a> {
