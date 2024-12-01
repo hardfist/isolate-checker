@@ -4,6 +4,5 @@ pub mod checker;
 pub mod error;
 pub mod hir_def;
 pub mod hir_ctx;
-pub mod hir;
 pub mod hir_ty;
 pub mod infer;
