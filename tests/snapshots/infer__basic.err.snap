@@ -2,4 +2,9 @@
 source: tests/infer.rs
 expression: error_msg
 ---
-
+  × expected String, but got Number
+   ╭─[1:17]
+ 1 │ let a:string = 10;
+   ·                 ──
+ 2 │ a
+   ╰────

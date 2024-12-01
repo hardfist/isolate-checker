@@ -39,11 +39,12 @@ impl ModuleChecker {
             infer.infer_item(&mut infer_ctx, item);
         }
         errors.append(&mut infer.reports);
-        let box_errors = errors.into_iter().map(|x| Arc::new(x)).collect();
+        let box_errors = errors.into_iter().map(|x| Arc::new(x.with_source_code(self.code.clone()))).collect();
         self.extends_errors(box_errors);
     }
     pub fn emit_error(&self) -> String {
-        let report_handler = miette::GraphicalReportHandler::new();
+        let theme =  miette::GraphicalTheme::unicode_nocolor();
+        let report_handler = miette::GraphicalReportHandler::new().with_theme(theme);
         let error_msg: Vec<String> = self
             .errors
             .clone().

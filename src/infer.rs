@@ -1,9 +1,10 @@
-use crate::error::UnifyReport;
+use crate::error::{ToSourceSpan, TypeMismatch, UnifyReport};
 use crate::hir_ctx::HirCtx;
 use crate::hir_ty::{Ty, TyKind};
 use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
+use swc_core::common::Spanned;
 use std::fmt::Debug;
 use swc_core::ecma::ast::{
     Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, Stmt, TsKeywordTypeKind,
@@ -102,12 +103,20 @@ impl TypeInference {
 impl TypeInference {
     pub fn check(&mut self, ctx: &InferContext<'_>, expr: &Expr, expected_ty: Ty) {
         let expected_ty = self.norm(&expected_ty);
+        dbg!(&expr,&expected_ty);
         match (expected_ty.as_ref(), expr) {
             _ => {
                 let got_ty = self.infer_expr(ctx, expr);
+                dbg!(&got_ty,expr);
                 match is_subtype(&expected_ty, &got_ty) {
                     Some(true) => (),
-                    Some(false) => {}
+                    Some(false) => {
+                        self.reports.push(TypeMismatch {
+                            span: Some(expr.span().to_source_span()),
+                            expected: expected_ty.clone(),
+                            got: got_ty.clone()
+                        }.into());
+                    }
                     None => {
                         let result = self.unify_subtype(ctx, &expected_ty, &got_ty);
                         self.report(result);
@@ -118,6 +127,7 @@ impl TypeInference {
     }
 }
 fn is_subtype(x: &Ty, y: &Ty) -> Option<bool> {
+    dbg!(&x,&y);
     match (x.as_ref(), y.as_ref()) {
         (..) if x == y => Some(true),
         _ => Some(false),
@@ -213,8 +223,8 @@ impl TypeInference {
     }
     pub fn infer_lit(&mut self, ctx: &InferContext<'_>, lit: &Lit) -> Ty {
         match lit {
-            Lit::Num(_) => ctx.hir_ctx.ty_ctx.string.clone(),
-            Lit::Str(_) => ctx.hir_ctx.ty_ctx.number.clone(),
+            Lit::Num(_) => ctx.hir_ctx.ty_ctx.number.clone(),
+            Lit::Str(_) => ctx.hir_ctx.ty_ctx.string.clone(),
             _ => ctx.hir_ctx.ty_ctx.unknown.clone(),
         }
     }
