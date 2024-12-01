@@ -23,10 +23,10 @@ fn main() -> Result<()> {
     let mut errors = Vec::new();
     let ir_ctx = HirCtx::new(&ast, &mut errors);
     let mut infer = TypeInference::default();
-    let infer_ctx = InferContext::new(&ir_ctx);
+    let mut infer_ctx = InferContext::new(&ir_ctx);
 
     for item in ir_ctx.ast.items() {
-        infer.infer_item(&infer_ctx, item);
+        infer.infer_item(&mut infer_ctx, item);
     }
     errors.append(&mut infer.reports);
 

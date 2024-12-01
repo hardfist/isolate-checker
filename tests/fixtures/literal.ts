@@ -1,2 +1,2 @@
-100
-"ts"
+let a:string = 10;
+a

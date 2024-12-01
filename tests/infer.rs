@@ -13,8 +13,11 @@ pub fn run_test() -> miette::Result<()> {
         let case = case.into_diagnostic()?;
         assert!(case.path().extension().map_or(false, |x| dbg!(x).eq("ts")));
         let content = fs::read_to_string(case.path()).into_diagnostic()?;
-        let checker = ModuleChecker::new(Arc::new(content))?;
+        let mut checker = ModuleChecker::new(Arc::new(content))?;
         checker.check();
+        let error_msg = checker.emit_error();
+        insta::assert_snapshot!("basic.err", error_msg);
+        
     }
     Ok(())
 }

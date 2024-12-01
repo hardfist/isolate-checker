@@ -131,15 +131,18 @@ impl TypeInference {
         }
     }
     // infer type for type_node
-    pub fn infer_type_node(&mut self, _ctx: &InferContext<'_>, ty_node: &TsTypeAnn) -> Ty {
+    pub fn infer_type_node(&mut self, ctx: &InferContext<'_>, ty_node: &TsTypeAnn) -> Ty {
         use swc_core::ecma::ast::TsType;
         match ty_node.type_ann.as_ref() {
             TsType::TsKeywordType(t) => match t.kind {
                 TsKeywordTypeKind::TsNumberKeyword => {
-                    todo!()
+                    ctx.hir_ctx.ty_ctx.number.clone()
+                },
+                TsKeywordTypeKind::TsStringKeyword => {
+                    ctx.hir_ctx.ty_ctx.string.clone()
                 }
                 _ => {
-                    todo!()
+                    ctx.hir_ctx.ty_ctx.error.clone()
                 }
             },
             _ => {
@@ -149,28 +152,34 @@ impl TypeInference {
     }
     pub fn infer_module_decl(&mut self) {}
     // let a: number = 10
-    pub fn infer_var_declarator(&mut self, ctx: &InferContext<'_>, decl: &VarDeclarator) {
+    pub fn infer_var_declarator(&mut self, ctx: &mut InferContext<'_>, decl: &VarDeclarator) {
         // infer ty of ty annotation
-        let anno_ty = if let Pat::Ident(id) = &decl.name {
+        let var_ty = if let Pat::Ident(id) = &decl.name {
             if let Some(ty_node) = id.type_ann.as_ref() {
                 self.infer_type_node(ctx, ty_node.as_ref())
             } else {
                 self.new_var()
             }
+            
         } else {
-            todo!()
+           self.new_var()
         };
-        // check anno_ty with init_ty
+
+        // check anno_ty eq init_ty
         if let Some(init_expr) = &decl.init {
-            self.check(ctx, init_expr, anno_ty);
+            self.check(ctx, init_expr, var_ty.clone());
+        }
+        if let Some(id) = decl.name.as_ident() {
+            let name = id.sym.as_str();
+            ctx.env.insert(name.to_string(), var_ty);
         }
     }
-    pub fn infer_var_decl(&mut self, ctx: &InferContext<'_>, var_decl: &VarDecl) {
+    pub fn infer_var_decl(&mut self, ctx: &mut InferContext<'_>, var_decl: &VarDecl) {
         for decl in &var_decl.decls {
             self.infer_var_declarator(ctx, decl);
         }
     }
-    pub fn infer_decl(&mut self, ctx: &InferContext<'_>, decl: &Decl) {
+    pub fn infer_decl(&mut self, ctx: &mut InferContext<'_>, decl: &Decl) {
         match decl {
             Decl::Fn(node) => {
                 self.infer_fn_decl(ctx, node);
@@ -209,7 +218,7 @@ impl TypeInference {
             _ => ctx.hir_ctx.ty_ctx.unknown.clone(),
         }
     }
-    pub fn infer_stmt(&mut self, ctx: &InferContext<'_>, stmt: &Stmt) {
+    pub fn infer_stmt(&mut self, ctx: &mut InferContext<'_>, stmt: &Stmt) {
         match stmt {
             Stmt::Decl(decl) => {
                 self.infer_decl(ctx, decl);
@@ -223,7 +232,7 @@ impl TypeInference {
         }
     }
     pub fn infer_fn_decl(&mut self, _ctx: &InferContext<'_>, _node: &FnDecl) {}
-    pub fn infer_item(&mut self, ctx: &InferContext<'_>, item: &ModuleItem) {
+    pub fn infer_item(&mut self, ctx: &mut InferContext<'_>, item: &ModuleItem) {
         match item {
             ModuleItem::ModuleDecl(_) => self.infer_module_decl(),
             ModuleItem::Stmt(stmt) => {
