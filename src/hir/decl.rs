@@ -3,9 +3,9 @@ use im::HashMap;
 use la_arena::{Arena, Idx};
 use miette::Report;
 use rangemap::RangeMap;
-use swc_core::common::{BytePos, Span, Spanned};
-use swc_core::ecma::ast::{Id, Pat, TsTypeAliasDecl, VarDeclarator};
-use swc_core::ecma::visit::{self, VisitWith};
+use swc_core::common::{BytePos, Span};
+use swc_core::ecma::ast::TsTypeAliasDecl;
+use swc_core::ecma::visit::VisitWith;
 use swc_core::ecma::{ast::FnDecl, visit::Visit};
 
 #[derive(Debug)]

@@ -5,7 +5,6 @@ use ena::unify::{InPlaceUnificationTable, NoError, UnifyKey, UnifyValue};
 use miette::Report;
 use ra_ap_intern::Interned;
 use std::fmt::Debug;
-use swc_core::common::Span;
 use swc_core::ecma::ast::{
     Decl, Expr, ExprStmt, FnDecl, Id, Ident, Lit, ModuleItem, Pat, Stmt, TsKeywordTypeKind,
     TsTypeAnn, VarDecl, VarDeclarator,
@@ -88,13 +87,13 @@ impl TypeInference {
     }
     pub fn unify(
         &mut self,
-        ctx: &InferContext<'_>,
-        mode: UnifyMode,
+        _ctx: &InferContext<'_>,
+        _mode: UnifyMode,
         x: &Ty,
         y: &Ty,
     ) -> Result<(), UnifyReport> {
-        let x = self.norm(x);
-        let y = self.norm(y);
+        let _x = self.norm(x);
+        let _y = self.norm(y);
         //  let union_var_and_val = match(infer)
         Ok(())
     }
@@ -132,7 +131,7 @@ impl TypeInference {
         }
     }
     // infer type for type_node
-    pub fn infer_type_node(&mut self, ctx: &InferContext<'_>, ty_node: &TsTypeAnn) -> Ty {
+    pub fn infer_type_node(&mut self, _ctx: &InferContext<'_>, ty_node: &TsTypeAnn) -> Ty {
         use swc_core::ecma::ast::TsType;
         match ty_node.type_ann.as_ref() {
             TsType::TsKeywordType(t) => match t.kind {
@@ -223,7 +222,7 @@ impl TypeInference {
             }
         }
     }
-    pub fn infer_fn_decl(&mut self, ctx: &InferContext<'_>, _node: &FnDecl) {}
+    pub fn infer_fn_decl(&mut self, _ctx: &InferContext<'_>, _node: &FnDecl) {}
     pub fn infer_item(&mut self, ctx: &InferContext<'_>, item: &ModuleItem) {
         match item {
             ModuleItem::ModuleDecl(_) => self.infer_module_decl(),
@@ -241,27 +240,13 @@ impl TypeInference {
 pub struct InferContext<'ctx> {
     ir_ctx: &'ctx HirCtx<'ctx>,
     env: im::HashMap<String, Ty>,
-    type_args: Vec<Ty>,
-    block: BlockCtx,
 }
 
 impl<'ctx> InferContext<'ctx> {
     pub fn new(ctx: &'ctx HirCtx) -> InferContext<'ctx> {
         InferContext {
             ir_ctx: ctx,
-            env: Default::default(),
-            type_args: Default::default(),
-            block: Default::default(),
+            env: Default::default()
         }
     }
-}
-
-#[derive(Default, Debug)]
-struct BlockCtx {
-    body: Option<BodyCtx>,
-}
-
-#[derive(Debug)]
-struct BodyCtx {
-    result_type: Ty,
 }

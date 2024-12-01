@@ -15,7 +15,7 @@ impl<'a> HirCtx<'a> {
     pub fn new(ast: &'a Ast, errors: &mut Vec<Report>) -> HirCtx<'a> {
         let mut decl_context = DeclContext::default();
         walk_decl(&mut decl_context, ast, errors);
-        let mut ty_context = TyContext::default();
+        let ty_context = TyContext::default();
         HirCtx {
             ast,
             decl_ctx: decl_context,
