@@ -37,15 +37,6 @@ impl DeclContext {
             decl_map: Default::default(),
         })
     }
-    pub fn find_decl(&self, mut scope_id: ScopeId, name: &str) -> Option<DefId> {
-        loop {
-            let scope = &self.scopes[scope_id];
-            if let Some(decl_id) = scope.decl_map.get(name).copied() {
-                return Some(decl_id);
-            }
-            scope_id = scope.parent?;
-        }
-    }
     pub fn find_scope(&self, pos: BytePos) -> Option<ScopeId> {
         self.scopemap.get(&pos).copied()
     }

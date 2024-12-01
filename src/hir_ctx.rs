@@ -3,7 +3,7 @@ use miette::Report;
 use crate::{
     ast::Ast,
     hir::{walk_decl, DeclContext},
-    hir_ty::{walk_ty, TyContext},
+    hir_ty::{TyContext},
 };
 pub struct HirCtx<'a> {
     pub ast: &'a Ast,
@@ -16,7 +16,6 @@ impl<'a> HirCtx<'a> {
         let mut decl_context = DeclContext::default();
         walk_decl(&mut decl_context, ast, errors);
         let mut ty_context = TyContext::default();
-        walk_ty(&mut ty_context, &decl_context, errors);
         HirCtx {
             ast,
             decl_ctx: decl_context,
