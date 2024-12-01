@@ -1,2 +1,2 @@
-mod decl;
-pub use decl::*;
+mod scope;
+pub use scope::*;

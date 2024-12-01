@@ -7,23 +7,23 @@ use swc_core::ecma::visit::VisitWith;
 use swc_core::ecma::{ast::FnDecl, visit::Visit};
 
 #[derive(Debug)]
-pub struct DeclContext {
+pub struct ScopeContext {
     pub root_scope: ScopeId,
     pub scopes: Arena<Scope>,
     pub scopemap: RangeMap<BytePos, ScopeId>,
 }
-impl Default for DeclContext {
+impl Default for ScopeContext {
     fn default() -> Self {
         let mut scopes = Arena::default();
         let root = scopes.alloc(Scope::default());
-        DeclContext {
+        ScopeContext {
             root_scope: root,
             scopes: Default::default(),
             scopemap: Default::default(),
         }
     }
 }
-impl DeclContext {
+impl ScopeContext {
     pub fn alloc_scope(&mut self, current: ScopeId) -> ScopeId {
         self.scopes.alloc(Scope {
             parent: Some(current),
@@ -35,10 +35,10 @@ impl DeclContext {
 }
 
 /// walk all declaration in ast
-pub fn build_scope(decl_ctx: &mut DeclContext, ast: &Ast, _errors: &mut Vec<Report>) {
+pub fn build_scope(decl_ctx: &mut ScopeContext, ast: &Ast, _errors: &mut Vec<Report>) {
     // build scope
     struct ScopeBuilder<'a> {
-        decl_ctx: &'a mut DeclContext,
+        decl_ctx: &'a mut ScopeContext,
         current: ScopeId,
     }
     impl<'a> Visit for ScopeBuilder<'a> {
