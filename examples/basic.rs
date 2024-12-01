@@ -1,5 +1,4 @@
 
-use std::sync::Arc;
 
 use isolate_checker::checker::ModuleChecker;
 use miette::Result;

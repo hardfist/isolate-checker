@@ -2,7 +2,6 @@ use isolate_checker::checker::ModuleChecker;
 use miette::IntoDiagnostic;
 use std::fs;
 use std::path::Path;
-use std::sync::Arc;
 
 #[test]
 pub fn run_test() -> miette::Result<()> {
@@ -13,7 +12,7 @@ pub fn run_test() -> miette::Result<()> {
         let case = case.into_diagnostic()?;
         assert!(case.path().extension().map_or(false, |x| x.eq("ts")));
         let content = fs::read_to_string(case.path()).into_diagnostic()?;
-        let mut checker = ModuleChecker::new(Arc::new(content))?;
+        let mut checker = ModuleChecker::new(content.into())?;
         checker.check();
         let error_msg = checker.emit_error();
         insta::assert_snapshot!("basic.err", error_msg);
