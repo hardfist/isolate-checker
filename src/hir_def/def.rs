@@ -6,24 +6,25 @@ use swc_core::common::BytePos;
 use swc_core::ecma::visit::VisitWith;
 use swc_core::ecma::{ast::FnDecl, visit::Visit};
 
+// Def Context used to manage definition & scope
 #[derive(Debug)]
-pub struct ScopeContext {
+pub struct DefCtx {
     pub root_scope: ScopeId,
     pub scopes: Arena<Scope>,
     pub scopemap: RangeMap<BytePos, ScopeId>,
 }
-impl Default for ScopeContext {
+impl Default for DefCtx {
     fn default() -> Self {
         let mut scopes = Arena::default();
         let root = scopes.alloc(Scope::default());
-        ScopeContext {
+        DefCtx {
             root_scope: root,
             scopes: Default::default(),
             scopemap: Default::default(),
         }
     }
 }
-impl ScopeContext {
+impl DefCtx {
     pub fn alloc_scope(&mut self, current: ScopeId) -> ScopeId {
         self.scopes.alloc(Scope {
             parent: Some(current),
@@ -35,10 +36,10 @@ impl ScopeContext {
 }
 
 /// walk all declaration in ast
-pub fn build_scope(decl_ctx: &mut ScopeContext, ast: &Ast, _errors: &mut Vec<Report>) {
+pub fn build_scope(decl_ctx: &mut DefCtx, ast: &Ast, _errors: &mut Vec<Report>) {
     // build scope
     struct ScopeBuilder<'a> {
-        decl_ctx: &'a mut ScopeContext,
+        decl_ctx: &'a mut DefCtx,
         current: ScopeId,
     }
     impl<'a> Visit for ScopeBuilder<'a> {

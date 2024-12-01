@@ -198,15 +198,15 @@ impl TypeInference {
         let name = id.sym.to_string();
         let ty = match ctx.env.get(&name) {
             Some(ty) => ty.clone(),
-            None => ctx.ir_ctx.ty_ctx.error.clone(),
+            None => ctx.hir_ctx.ty_ctx.error.clone(),
         };
         ty
     }
     pub fn infer_lit(&mut self, ctx: &InferContext<'_>, lit: &Lit) -> Ty {
         match lit {
-            Lit::Num(_) => ctx.ir_ctx.ty_ctx.string.clone(),
-            Lit::Str(_) => ctx.ir_ctx.ty_ctx.number.clone(),
-            _ => ctx.ir_ctx.ty_ctx.unknown.clone(),
+            Lit::Num(_) => ctx.hir_ctx.ty_ctx.string.clone(),
+            Lit::Str(_) => ctx.hir_ctx.ty_ctx.number.clone(),
+            _ => ctx.hir_ctx.ty_ctx.unknown.clone(),
         }
     }
     pub fn infer_stmt(&mut self, ctx: &InferContext<'_>, stmt: &Stmt) {
@@ -238,14 +238,14 @@ impl TypeInference {
 }
 
 pub struct InferContext<'ctx> {
-    ir_ctx: &'ctx HirCtx<'ctx>,
+    hir_ctx: &'ctx HirCtx<'ctx>,
     env: im::HashMap<String, Ty>,
 }
 
 impl<'ctx> InferContext<'ctx> {
     pub fn new(ctx: &'ctx HirCtx) -> InferContext<'ctx> {
         InferContext {
-            ir_ctx: ctx,
+            hir_ctx: ctx,
             env: Default::default()
         }
     }
