@@ -13,7 +13,8 @@ pub struct ModuleChecker {
     ast: Ast,
 }
 impl ModuleChecker {
-    pub fn new(code: Arc<String>) -> Result<ModuleChecker> {
+    pub fn new(code: String) -> Result<ModuleChecker> {
+        let code = Arc::new(code);
         let ast: Ast = Ast::new_from(code.clone())?;
         Ok(Self {
             errors: vec![],
