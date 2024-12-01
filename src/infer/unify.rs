@@ -3,7 +3,6 @@ use ra_ap_intern::Interned;
 use crate::{error::UnifyReport, hir_ty::{Ty, TyKind}};
 
 use super::{InferCtx, InferenceValue, TypeInference, UnifyMode};
-
 // this is unification api
 impl TypeInference {
     pub(crate) fn new_var(&mut self) -> Ty {
@@ -15,8 +14,8 @@ impl TypeInference {
         ctx: &InferCtx<'_>,
         x:&Ty,
         y: &Ty
-    ){
-
+    ) -> Result<(), UnifyReport> {
+        self.unify(ctx, UnifyMode::Eq, x, y)
     }
     pub(crate) fn unify_subtype(
         &mut self,
