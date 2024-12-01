@@ -15,9 +15,29 @@ fn is_subtype(x: &Ty, y: &Ty) -> Option<bool> {
         _ => Some(false),
     }
 }
+enum CheckMode {
+    Coercion,
+    Cast
+}
 // check api
 impl TypeInference {
-    pub fn check(&mut self, ctx: &InferCtx<'_>, expr: &Expr, expected_ty: Ty) -> Ty {
+    pub fn check_coercion(
+        &mut self,
+        ctx: &InferCtx<'_>,
+        expected_ty: Ty,
+        expr: &Expr
+    )-> Ty {
+        self.check(CheckMode::Coercion,&ctx,  expected_ty,expr)
+    }
+    pub fn check_cast(
+        &mut self,
+        ctx: &InferCtx<'_>,
+        expected_ty: Ty,
+        expr: &Expr
+    )-> Ty {
+        self.check(CheckMode::Cast,&ctx, expected_ty,expr)
+    }
+    pub fn check(&mut self, mode: CheckMode,ctx: &InferCtx<'_>,  expected_ty: Ty,expr: &Expr,) -> Ty {
         let expected_ty = self.norm(&expected_ty);
         match (expected_ty.as_ref(), expr) {
             _ => {

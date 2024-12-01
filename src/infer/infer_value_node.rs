@@ -25,7 +25,7 @@ impl TypeInference {
 
         // check anno_ty eq init_ty
         if let Some(init_expr) = &decl.init {
-            self.check(ctx, init_expr, var_ty.clone());
+            self.check_coercion(ctx,  var_ty.clone(),&init_expr);
         }
         if let Some(id) = decl.name.as_ident() {
             let name = id.sym.as_str();
@@ -81,7 +81,7 @@ impl TypeInference {
                 }
             },
         };
-        self.check(ctx, &assign_expr.right, left_ty)
+        self.check_coercion(ctx,  left_ty,&assign_expr.right)
     }
     pub fn infer_id(&mut self, ctx: &InferCtx<'_>, id: &Ident) -> Ty {
         let name = id.sym.to_string();
