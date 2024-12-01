@@ -2,7 +2,7 @@ use miette::Report;
 
 use crate::{
     ast::Ast,
-    hir::{walk_decl, DeclContext},
+    hir::{build_scope, DeclContext},
     hir_ty::{TyContext},
 };
 pub struct HirCtx<'a> {
@@ -14,7 +14,7 @@ pub struct HirCtx<'a> {
 impl<'a> HirCtx<'a> {
     pub fn new(ast: &'a Ast, errors: &mut Vec<Report>) -> HirCtx<'a> {
         let mut decl_context = DeclContext::default();
-        walk_decl(&mut decl_context, ast, errors);
+        build_scope(&mut decl_context, ast, errors);
         let ty_context = TyContext::default();
         HirCtx {
             ast,
