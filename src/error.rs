@@ -15,22 +15,21 @@ pub struct UnifyReport {
 
 #[derive(Error, Debug, Diagnostic)]
 #[error("expected {expected:?}, but got {got:?}")]
-pub struct TypeMismatch {
+pub(crate) struct TypeMismatch {
     #[label(primary)]
     pub span: Option<SourceSpan>,
     pub expected: Ty,
-    pub got: Ty
+    pub got: Ty,
 }
 
-pub trait ToSourceSpan {
+pub(crate) trait ToSourceSpan {
     fn to_source_span(&self) -> SourceSpan;
-
 }
 impl ToSourceSpan for Span {
     fn to_source_span(&self) -> SourceSpan {
         let start = self.lo.to_usize();
         let end = self.hi().to_usize();
-        
+
         SourceSpan::from(start..end)
     }
 }

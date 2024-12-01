@@ -1,9 +1,9 @@
-use crate::infer::InferenceVar;
 
 use super::Ty;
+use crate::infer::InferenceVar;
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
-pub enum TyKind {
+pub(crate) enum TyKind {
     Number,
     String,
     Unknown,
@@ -13,7 +13,7 @@ pub enum TyKind {
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
-pub struct Function {
+pub(crate) struct Function {
     pub params: Ty,
     pub r#return: Ty,
 }

@@ -1,13 +1,16 @@
 use swc_core::{common::Spanned, ecma::ast::Expr};
 
-use crate::{error::{ToSourceSpan, TypeMismatch}, hir_ty::{Ty, TyKind}};
+use crate::{
+    error::{ToSourceSpan, TypeMismatch},
+    hir_ty::{Ty, TyKind},
+};
 
 use super::{InferCtx, TypeInference};
 
 fn is_subtype(x: &Ty, y: &Ty) -> Option<bool> {
     match (x.as_ref(), y.as_ref()) {
         // we can't decide whether it is subtype now
-        (TyKind::Infer(_),_) | (_, TyKind::Infer(_)) => None,
+        (TyKind::Infer(_), _) | (_, TyKind::Infer(_)) => None,
         (..) if x == y => Some(true),
         _ => Some(false),
     }
@@ -22,14 +25,17 @@ impl TypeInference {
                 match is_subtype(&expected_ty, &got_ty) {
                     Some(true) => (),
                     Some(false) => {
-                        self.reports.push(TypeMismatch {
-                            span: Some(expr.span().to_source_span()),
-                            expected: expected_ty.clone(),
-                            got: got_ty.clone()
-                        }.into());
+                        self.reports.push(
+                            TypeMismatch {
+                                span: Some(expr.span().to_source_span()),
+                                expected: expected_ty.clone(),
+                                got: got_ty.clone(),
+                            }
+                            .into(),
+                        );
                     }
                     None => {
-                        println!("{:?},{:?}",&expected_ty,&got_ty);
+                        println!("{:?},{:?}", &expected_ty, &got_ty);
                         let result = self.unify_subtype(ctx, &expected_ty, &got_ty);
                         self.report(result);
                     }

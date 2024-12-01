@@ -23,13 +23,13 @@ impl ModuleChecker {
     }
 }
 impl ModuleChecker {
-    pub fn all_errors(&self) -> Vec<Arc<Report>>{
+    pub fn all_errors(&self) -> Vec<Arc<Report>> {
         self.errors.clone()
     }
     pub fn extends_errors(&mut self, errors: Vec<Arc<Report>>) {
         self.errors.extend(errors);
     }
-    pub fn check(&mut self)  {
+    pub fn check(&mut self) {
         let mut errors = Vec::new();
         let hir_ctx = HirCtx::new(&self.ast, &mut errors);
         let mut infer = TypeInference::default();
@@ -39,16 +39,19 @@ impl ModuleChecker {
             infer.infer_item(&mut infer_ctx, item);
         }
         errors.append(&mut infer.reports);
-        let box_errors = errors.into_iter().map(|x| Arc::new(x.with_source_code(self.code.clone()))).collect();
+        let box_errors = errors
+            .into_iter()
+            .map(|x| Arc::new(x.with_source_code(self.code.clone())))
+            .collect();
         self.extends_errors(box_errors);
     }
     pub fn emit_error(&self) -> String {
-        let theme =  miette::GraphicalTheme::unicode_nocolor();
+        let theme = miette::GraphicalTheme::unicode_nocolor();
         let report_handler = miette::GraphicalReportHandler::new().with_theme(theme);
         let error_msg: Vec<String> = self
             .errors
-            .clone().
-            into_iter()
+            .clone()
+            .into_iter()
             .map(|err| {
                 let mut output = String::new();
                 report_handler

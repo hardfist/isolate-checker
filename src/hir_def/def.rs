@@ -58,8 +58,6 @@ pub fn build_scope(decl_ctx: &mut DefCtx, ast: &Ast, _errors: &mut Vec<Report>) 
     });
 }
 
-
-
 /// scope
 ///
 #[derive(Debug, Default)]

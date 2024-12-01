@@ -1,9 +1,8 @@
 use ra_ap_intern::Interned;
 
-
 use super::TyKind;
 #[derive(Debug)]
-pub struct TyContext {
+pub(crate) struct TyContext {
     pub string: Ty,
     pub number: Ty,
     pub unknown: Ty,
@@ -20,6 +19,6 @@ impl Default for TyContext {
     }
 }
 
-pub type Ty = Interned<TyKind>;
+pub(crate) type Ty = Interned<TyKind>;
 
 ra_ap_intern::impl_internable!(TyKind);

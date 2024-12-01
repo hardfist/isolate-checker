@@ -1,4 +1,4 @@
 mod ty;
 mod tykind;
-pub use ty::*;
-pub use tykind::*;
+pub(crate) use ty::*;
+pub(crate) use tykind::*;

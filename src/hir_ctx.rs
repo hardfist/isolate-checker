@@ -3,11 +3,10 @@ use miette::Report;
 use crate::{
     ast::Ast,
     hir_def::{build_scope, DefCtx},
-    hir_ty::{TyContext},
+    hir_ty::TyContext,
 };
-pub struct HirCtx<'a> {
+pub(crate) struct HirCtx<'a> {
     pub ast: &'a Ast,
-    pub def_ctx: DefCtx,
     pub ty_ctx: TyContext,
 }
 
@@ -18,7 +17,6 @@ impl<'a> HirCtx<'a> {
         let ty_context = TyContext::default();
         HirCtx {
             ast,
-            def_ctx: def_context,
             ty_ctx: ty_context,
         }
     }
