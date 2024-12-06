@@ -1,3 +1,5 @@
+use core::error;
+
 use miette::{Diagnostic, Report, SourceSpan};
 use swc_core::common::{source_map::SmallPos, Span, NO_EXPANSION};
 use thiserror::Error;
@@ -11,6 +13,12 @@ pub struct UnifyFailed {
     pub span: Option<SourceSpan>,
     #[related]
     pub chain: Vec<Report>,
+}
+#[derive(Error,Debug,Diagnostic)]
+#[error("conflict known type: {left},{right}")]
+pub struct UnifyConflict {
+    left: String,
+    right: String
 }
 
 impl UnifyFailed {

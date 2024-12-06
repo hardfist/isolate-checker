@@ -83,8 +83,8 @@ impl UnifyValue for InferenceValue {
 
     fn unify_values(value1: &Self, value2: &Self) -> Result<Self, Self::Error> {
         match (value1, value2) {
-            (InferenceValue::Known(_), InferenceValue::Known(_)) => {
-                panic!("conflict ty")
+            (InferenceValue::Known(t1), InferenceValue::Known(t2)) => {
+                panic!("conflict ty: {t1:?},{t2:?}")
             }
             (InferenceValue::Known(ty), InferenceValue::Unknown)
             | (InferenceValue::Unknown, InferenceValue::Known(ty)) => {
