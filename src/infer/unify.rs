@@ -15,7 +15,18 @@ impl TypeInference {
     }
     // FIXME: what does norm do?
     pub(crate) fn norm(&mut self, ty: &Ty) -> Ty {
-        ty.clone()
+        
+        match &**ty {
+            TyKind::Infer(var_id) => {
+                let root = self.table.find(*var_id);
+                match self.table.probe_value(root) {
+                    InferenceValue::Known(ty) => self.norm(&ty),
+                    InferenceValue::Unknown => ty.clone()
+                }
+            },
+            _ => ty.clone()
+
+        }
     }
     pub(crate) fn unify_eq(
         &mut self,
