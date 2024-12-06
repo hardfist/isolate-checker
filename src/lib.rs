@@ -6,3 +6,4 @@ pub mod hir_ctx;
 pub mod hir_def;
 pub mod hir_ty;
 pub mod infer;
+pub mod util;

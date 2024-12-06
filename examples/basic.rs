@@ -1,5 +1,3 @@
-
-
 use isolate_checker::checker::ModuleChecker;
 use miette::Result;
 
@@ -16,7 +14,7 @@ fn main() -> Result<()> {
     let mut checker = ModuleChecker::new(code.into())?;
     checker.check();
     let msg = checker.emit_error();
-    println!("diagnostics:\n{:}",msg);
+    println!("diagnostics:\n{:}", msg);
     Ok(())
     //let mut infer_context = Default::default();
 }

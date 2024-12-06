@@ -1,9 +1,11 @@
 use crate::hir_ctx::HirCtx;
 use crate::hir_ty::Ty;
-use swc_core::ecma::ast::{
-    AssignExpr, AssignTarget, BindingIdent, Decl, Expr, ExprStmt, FnDecl, Ident, Lit,
-    ModuleItem, Pat, SimpleAssignTarget, Stmt, VarDecl,
-    VarDeclarator,
+use swc_core::{
+    common::Spanned,
+    ecma::ast::{
+        AssignExpr, AssignTarget, BindingIdent, Decl, Expr, ExprStmt, FnDecl, Ident, Lit,
+        ModuleItem, Pat, SimpleAssignTarget, Stmt, VarDecl, VarDeclarator,
+    },
 };
 
 use super::TypeInference;
@@ -25,7 +27,7 @@ impl TypeInference {
 
         // check anno_ty eq init_ty
         if let Some(init_expr) = &decl.init {
-            self.check_coercion(ctx,  var_ty.clone(),&init_expr);
+            self.check_coercion(ctx, var_ty.clone(), &init_expr);
         }
         if let Some(id) = decl.name.as_ident() {
             let name = id.sym.as_str();
@@ -53,7 +55,7 @@ impl TypeInference {
         self.infer_expr(ctx, &expr.expr)
     }
     pub fn infer_expr(&mut self, ctx: &InferCtx<'_>, expr: &Expr) -> Ty {
-        match expr {
+        let ty = match expr {
             Expr::Lit(lit) => self.infer_lit(ctx, lit),
             Expr::Ident(id) => self.infer_id(ctx, id),
             Expr::Assign(expr) => self.infer_assign_expr(ctx, expr),
@@ -61,7 +63,9 @@ impl TypeInference {
                 dbg!(expr);
                 todo!()
             }
-        }
+        };
+        self.typemap.insert(expr.span(), ty.clone());
+        ty
     }
     pub fn infer_binding_ident(&mut self, ctx: &InferCtx<'_>, binding_id: &BindingIdent) -> Ty {
         if let Some(anno) = &binding_id.type_ann {
@@ -81,7 +85,7 @@ impl TypeInference {
                 }
             },
         };
-        self.check_coercion(ctx,  left_ty,&assign_expr.right)
+        self.check_coercion(ctx, left_ty, &assign_expr.right)
     }
     pub fn infer_id(&mut self, ctx: &InferCtx<'_>, id: &Ident) -> Ty {
         let name = id.sym.to_string();

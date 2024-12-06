@@ -1,4 +1,3 @@
-
 use super::Ty;
 use crate::infer::InferenceVar;
 

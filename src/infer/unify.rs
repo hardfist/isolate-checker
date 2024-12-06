@@ -2,7 +2,7 @@ use ena::unify::{NoError, UnifyKey, UnifyValue};
 use ra_ap_intern::Interned;
 
 use crate::{
-    error::UnifyReport,
+    error::UnifyFailed,
     hir_ty::{Ty, TyKind},
 };
 
@@ -22,7 +22,7 @@ impl TypeInference {
         ctx: &InferCtx<'_>,
         x: &Ty,
         y: &Ty,
-    ) -> Result<(), UnifyReport> {
+    ) -> Result<(), UnifyFailed> {
         self.unify(ctx, UnifyMode::Eq, x, y)
     }
     pub(crate) fn unify_subtype(
@@ -30,19 +30,42 @@ impl TypeInference {
         ctx: &InferCtx<'_>,
         x: &Ty,
         y: &Ty,
-    ) -> Result<(), UnifyReport> {
+    ) -> Result<(), UnifyFailed> {
         self.unify(ctx, UnifyMode::Subtype, x, y)
+    }
+    pub(crate) fn unify_var_and_var(
+        &mut self,
+        ctx: &InferCtx<'_>,
+        mode: UnifyMode,
+        x: &Ty,
+        y: &Ty,
+    ) {
+
     }
     pub(crate) fn unify(
         &mut self,
-        _ctx: &InferCtx<'_>,
-        _mode: UnifyMode,
+        ctx: &InferCtx<'_>,
+        mode: UnifyMode,
         x: &Ty,
         y: &Ty,
-    ) -> Result<(), UnifyReport> {
+    ) -> Result<(), UnifyFailed> {
         let x = self.norm(x);
         let y = self.norm(y);
-        //  let union_var_and_val = match(infer)
+        match (&*x, &*y) {
+            (..) if x == y => (),
+            (TyKind::Infer(id1), TyKind::Infer(id2)) => {
+                if id1 != id2 {
+                    return Err(UnifyFailed::new(x,y, None))
+                }
+            },
+            (TyKind::Infer(id), _) => {
+                self.table.union_value(*id, InferenceValue::Known(y));
+            }
+            (_, TyKind::Infer(id)) => {
+                self.table.union_value(*id, InferenceValue::Known(x));
+            }
+            _ => (),
+        }
         Ok(())
     }
 }

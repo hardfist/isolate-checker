@@ -1,0 +1,7 @@
+---
+source: tests/infer.rs
+assertion_line: 18
+expression: error_msg
+snapshot_kind: text
+---
+
